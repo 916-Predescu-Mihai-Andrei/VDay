@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Will you be my Valentine?</title>
+  <title>For Alexia</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -23,15 +22,16 @@
 
     body {
       margin: 0;
-      min-height: 100svh;
+      min-height: 100vh;
       display: grid;
       place-items: center;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: var(--font); /* Apply cute font */
+      font-family: var(--font);
       overflow: hidden;
       padding: 16px;
     }
 
+    /* FULL-SCREEN CONFETTI CANVAS */
     #confettiCanvas {
       position: fixed;
       inset: 0;
@@ -42,36 +42,41 @@
     }
 
     .card {
-      width: min(500px, 92vw); /* Made card slightly smaller for cuteness */
-      padding: 40px 20px;
+      width: min(500px, 92vw);
+      padding: 30px 20px;
       background: var(--card);
       backdrop-filter: blur(10px);
       border-radius: 30px;
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,.1);
+      box-shadow: 0 15px 40px rgba(0,0,0,.15);
       border: 4px solid #fff;
     }
 
-    /* IMAGE STYLES */
-    .cat-img {
-      max-width: 100%;
-      height: 200px;
-      object-fit: contain;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+    /* SVG CAT STYLES */
+    .cat-svg {
+      width: 200px;
+      height: 180px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+      transition: transform 0.2s ease;
     }
+    
+    /* Hide/Show logic for facial expressions */
+    .face-group { display: none; }
+    .face-group.active { display: block; }
 
     h1 {
       font-size: clamp(24px, 5vw, 36px);
-      margin: 0 0 25px;
+      margin: 10px 0 25px;
       color: #ff3b7a;
-      line-height: 1.3;
+      line-height: 1.2;
     }
 
+    /* BUTTON ZONE - Restored from original code */
     .button-zone {
       position: relative;
       width: 100%;
-      height: 80px;
+      height: 120px; /* Enough height for buttons to move */
       margin: 0 auto;
     }
 
@@ -86,18 +91,22 @@
       border: none;
       cursor: pointer;
       box-shadow: 0 8px 15px rgba(0,0,0,.1);
-      transition: transform .2s ease, background .2s ease;
+      transition: background 0.2s ease, transform 0.1s ease;
     }
 
     #yesBtn {
-      left: 20%; /* Positioned slightly closer */
+      left: 20%;
       background: var(--yes);
       color: #fff;
+      z-index: 10;
     }
-    #yesBtn:hover { background: var(--yesHover); transform: translateY(-50%) scale(1.1); }
+    #yesBtn:hover { 
+      background: var(--yesHover); 
+      transform: translateY(-50%) scale(1.1); 
+    }
 
     #noBtn {
-      right: 20%; /* Positioned slightly closer */
+      left: 60%; /* Start side-by-side */
       background: #fff;
       color: #ff3b7a;
       border: 2px solid #ffeef6;
@@ -112,7 +121,7 @@
     .result h2 {
       font-size: 32px;
       color: #ff3b7a;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
     }
 
     @keyframes pop {
@@ -126,14 +135,41 @@
   <canvas id="confettiCanvas"></canvas>
 
   <main class="card">
-    <img 
-      id="mainImage" 
-      class="cat-img" 
-      src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzJjYzViODcwYzE2YjE5ZTYwY2U4YjY3ZDU3NTM1YjU3ZDUyZDUzMyZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/hz5L49L76s59K/giphy.gif" 
-      alt="Cute cat asking"
-    />
+    
+    <svg class="cat-svg" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#FFF5F7" stroke="#FFB7C5" stroke-width="4">
+        <path d="M40 60 L20 10 L80 30 Z" />
+        <path d="M160 60 L180 10 L120 30 Z" />
+        <ellipse cx="100" cy="100" rx="80" ry="70" />
+      </g>
+      
+      <path d="M45 55 L30 25 L70 40 Z" fill="#FFB7C5" />
+      <path d="M155 55 L170 25 L130 40 Z" fill="#FFB7C5" />
 
-    <h1 id="question">Alexiaaa, will you be my Valentine?</h1>
+      <g id="face-asking" class="face-group active">
+        <circle cx="70" cy="90" r="8" fill="#555" />
+        <circle cx="130" cy="90" r="8" fill="#555" />
+        <ellipse cx="60" cy="110" rx="8" ry="5" fill="#FFD1DC" />
+        <ellipse cx="140" cy="110" rx="8" ry="5" fill="#FFD1DC" />
+        <path d="M90 110 Q100 120 110 110" fill="none" stroke="#555" stroke-width="3" stroke-linecap="round" />
+      </g>
+
+      <g id="face-sad" class="face-group">
+        <path d="M60 95 L80 95 M60 90 L80 100 M60 100 L80 90" stroke="#555" stroke-width="3" />
+        <path d="M120 95 L140 95 M120 90 L140 100 M120 100 L140 90" stroke="#555" stroke-width="3" />
+        <path d="M65 110 Q60 125 65 130" fill="none" stroke="#6EB5FF" stroke-width="3" />
+        <path d="M135 110 Q140 125 135 130" fill="none" stroke="#6EB5FF" stroke-width="3" />
+        <path d="M90 120 Q100 110 110 120" fill="none" stroke="#555" stroke-width="3" stroke-linecap="round" />
+      </g>
+
+      <g id="face-happy" class="face-group">
+        <path d="M60 90 Q70 80 80 90" fill="none" stroke="#555" stroke-width="4" stroke-linecap="round" />
+        <path d="M120 90 Q130 80 140 90" fill="none" stroke="#555" stroke-width="4" stroke-linecap="round" />
+        <path d="M100 135 L90 125 A 5 5 0 0 1 100 115 A 5 5 0 0 1 110 125 Z" fill="#FF3B7A" transform="scale(2) translate(-50, -60)" />
+      </g>
+    </svg>
+
+    <h1 id="question">Alexia, will you be my Valentine?</h1>
 
     <section class="button-zone" id="zone">
       <button id="yesBtn">Yes!</button>
@@ -142,11 +178,7 @@
 
     <section class="result" id="result">
       <h2>YAY! I love you! ❤️</h2>
-      <img
-        class="cat-img"
-        src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2QyZzZ5aW12eGZ6eWx5aW12eGZ6eWx5aW12eGZ6eWx5aW12eGZ6eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/KztT2c4u8mYYyq7S/giphy.gif"
-        alt="Happy cats"
-      />
+      <p>Best Valentine Ever.</p>
     </section>
   </main>
 
@@ -155,75 +187,110 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const result = document.getElementById("result");
-    const mainImage = document.getElementById("mainImage");
     const question = document.getElementById("question");
-
-    // URLs for the Gifs
-    const GIF_ASKING = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzJjYzViODcwYzE2YjE5ZTYwY2U4YjY3ZDU3NTM1YjU3ZDUyZDUzMyZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/hz5L49L76s59K/giphy.gif";
     
-    // Sad cat for when they try to click No
-    const GIF_SAD = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJtNW81aG56c2d4YWR1aG14Ym9kY2c4aHR2bW93Z3U0eGZ6bHlpciZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/l4FGp6wJHK85yptT2/giphy.gif";
+    // SVG GROUPS
+    const faceAsking = document.getElementById("face-asking");
+    const faceSad = document.getElementById("face-sad");
+    const faceHappy = document.getElementById("face-happy");
 
-    /* ---------- CONFETTI SETUP ---------- */
+    function setFace(face) {
+      faceAsking.classList.remove("active");
+      faceSad.classList.remove("active");
+      faceHappy.classList.remove("active");
+      
+      if(face === "sad") faceSad.classList.add("active");
+      else if(face === "happy") faceHappy.classList.add("active");
+      else faceAsking.classList.add("active");
+    }
+
+    /* ---------- CONFETTI ---------- */
     const confettiCanvas = document.getElementById("confettiCanvas");
     function resizeConfettiCanvas() {
       confettiCanvas.width = window.innerWidth;
       confettiCanvas.height = window.innerHeight;
     }
     resizeConfettiCanvas();
-    window.addEventListener("resize", resizeConfettiCanvas);
-    const confettiInstance = confetti.create(confettiCanvas, { resize: true });
+    const confettiInstance = confetti.create(confettiCanvas, { resize: true, useWorker: true });
 
-    /* ---------- INTERACTION ---------- */
-    
-    // 1. Move "No" Button & Make Cat Sad
-    function moveNo(e) {
-      const z = zone.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-      
-      // Calculate max boundaries
-      const maxX = z.width - b.width;
-      const maxY = z.height - b.height;
-      
-      // Random position
-      const newX = Math.random() * maxX;
-      const newY = Math.random() * maxY;
-
-      noBtn.style.left = newX + "px";
-      noBtn.style.top = newY + "px";
-      noBtn.style.transform = "none"; // Remove center transform to use exact coords
-      
-      // CHANGE IMAGE TO SAD CAT
-      mainImage.src = GIF_SAD;
-      question.innerText = "Please? 🥺";
-      question.style.color = "#888"; // Grey out text slightly
-    }
-
-    // Trigger move on Hover (Desktop) or Touch (Mobile) near the button
-    noBtn.addEventListener("mouseenter", moveNo);
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
-
-    // 2. Reset if they hover over "Yes"
+    /* ---------- YES BUTTON LOGIC ---------- */
     yesBtn.addEventListener("mouseenter", () => {
-      mainImage.src = GIF_ASKING;
-      question.innerText = "Nirali, will you be my Valentine?";
-      question.style.color = "#ff3b7a";
+      // If we hover over yes, cat gets happy/hopeful (default asking face)
+      setFace("asking");
+      question.innerText = "Alexia, will you be my Valentine?";
     });
 
-    // 3. Click "Yes"
     yesBtn.addEventListener("click", () => {
-      // Hide the buttons and question
       zone.style.display = "none";
       question.style.display = "none";
-      mainImage.style.display = "none"; // Hide the asking cat
-      
-      // Show result
       result.style.display = "block";
       
-      // Fire Confetti
-      confettiInstance({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      setTimeout(() => confettiInstance({ particleCount: 100, spread: 100, origin: { y: 0.6 } }), 500);
-      setTimeout(() => confettiInstance({ particleCount: 100, spread: 120, origin: { y: 0.6 } }), 1000);
+      // Happy Cat
+      setFace("happy");
+      
+      // Confetti
+      confettiInstance({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+    });
+
+    /* ---------- NO BUTTON LOGIC (Original "Run Away" Physics) ---------- */
+    
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function moveNo(x, y) {
+      const z = zone.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+
+      // Calculate center of button
+      const btnCenterX = b.left + b.width / 2;
+      const btnCenterY = b.top + b.height / 2;
+
+      // Vector from Mouse(x,y) to ButtonCenter
+      let dx = btnCenterX - x;
+      let dy = btnCenterY - y;
+      
+      const dist = Math.hypot(dx, dy);
+
+      // If mouse is within 150px, move away
+      if (dist < 150) {
+        // Normalize
+        const mag = dist || 1; // avoid divide by zero
+        dx /= mag;
+        dy /= mag;
+
+        // Move by a fixed "speed" factor relative to proximity
+        // The closer the mouse, the stronger the push
+        const push = 200; 
+
+        // Current position relative to zone
+        let newLeft = (b.left - z.left) + dx * 20;
+        let newTop  = (b.top - z.top) + dy * 20;
+
+        // Keep inside the zone (Clamp)
+        newLeft = clamp(newLeft, 0, z.width - b.width);
+        newTop  = clamp(newTop, 0, z.height - b.height);
+
+        noBtn.style.left = newLeft + "px";
+        noBtn.style.top = newTop + "px";
+        noBtn.style.transform = "none"; // Remove centering transform for exact positioning
+        
+        // MAKE CAT SAD
+        setFace("sad");
+        question.innerText = "Please? 🥺";
+      }
+    }
+
+    // Track mouse over the ZONE to trigger movement
+    zone.addEventListener("mousemove", e => {
+      moveNo(e.clientX, e.clientY);
+    });
+
+    // Mobile support
+    zone.addEventListener("touchmove", e => {
+      e.preventDefault(); // prevent scroll
+      const touch = e.touches[0];
+      moveNo(touch.clientX, touch.clientY);
     });
 
   </script>
